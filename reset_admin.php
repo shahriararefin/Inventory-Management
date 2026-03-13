@@ -23,3 +23,5 @@ if(mysqli_query($conn, $sql)){
     echo "Error: " . mysqli_error($conn);
 }
 ?>
+
+ <!-- Open your browser and go to: http://localhost/shokher_ghor/reset_admin.php -->

@@ -78,7 +78,7 @@ $role = $_SESSION['role'] ?? 'staff';
     <a href="manage_suppliers.php">Suppliers</a>
     <?php endif; ?>
             <?php endif; ?>
-
+        <a href="change_password.php">🔐 Change Password</a>        
         <a href="logout.php" style="color: #ff9999;">🚪 Logout</a>
     </div>
 </div>
