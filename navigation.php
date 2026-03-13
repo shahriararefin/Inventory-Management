@@ -64,7 +64,7 @@ $role = $_SESSION['role'] ?? 'staff';
         <a href="cart.php" class="<?php echo ($current_page == 'cart.php') ? 'active' : ''; ?>">
             🛒 Cart <?php if($cart_count > 0): ?><span class="cart-badge"><?php echo $cart_count; ?></span><?php endif; ?>
         </a>
-        
+        <a href="customer_history.php">🔍 History</a>
         <a href="reports.php" class="<?php echo ($current_page == 'reports.php') ? 'active' : ''; ?>">📊 Sales Reports</a>
         
         <a href="margins.php" class="<?php echo ($current_page == 'margins.php') ? 'active' : ''; ?>">💰 Profit Margins</a>

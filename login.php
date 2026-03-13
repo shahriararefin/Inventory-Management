@@ -24,6 +24,7 @@ if(isset($_POST['login'])){
         // SUCCESS: Store critical info in the session
         $_SESSION['admin'] = $row['username'];
         $_SESSION['role'] = $row['role']; // Essential for hiding Audit Logs from staff
+        $_SESSION['user_id'] = $row['id'];
         
         header("Location: index.php");
         exit();

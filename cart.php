@@ -152,9 +152,14 @@ if(isset($_GET['action']) && $_GET['action'] == "clear") {
             </div>
         </form>
 
-        <form action="process_checkout.php" method="POST">
-            <button type="submit" class="btn-checkout">Complete Sale & Print Receipt</button>
-        </form>
+        <form action="process_checkout.php" method="POST" style="margin-top: 30px; border-top: 1px solid #eee; padding-top: 20px;">
+    <h4 style="color: #5d4037; margin-bottom: 10px;">👤 Customer Information (Optional)</h4>
+    <div style="display: flex; gap: 15px; margin-bottom: 20px;">
+        <input type="text" name="cust_name" placeholder="Customer Name" style="flex: 1; padding: 10px; border: 1px solid #ddd; border-radius: 4px;">
+        <input type="text" name="cust_phone" placeholder="Phone Number" style="flex: 1; padding: 10px; border: 1px solid #ddd; border-radius: 4px;">
+    </div>
+    <button type="submit" class="btn-checkout">Complete Sale & Print Receipt</button>
+</form>
 
     <?php else: ?>
         <div style="text-align: center; padding: 60px;">

@@ -10,8 +10,20 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
 // Handle User Deletion
 if(isset($_GET['delete'])){
     $id = (int)$_GET['delete'];
-    mysqli_query($conn, "DELETE FROM users WHERE id = $id AND role != 'admin'");
-    header("Location: manage_users.php?msg=deleted");
+    
+    // 1. Prevent an admin from deleting their own current session account
+    // Note: Ensure $_SESSION['user_id'] is set during login
+    if(isset($_SESSION['user_id']) && $id === (int)$_SESSION['user_id']) {
+        header("Location: manage_users.php?msg=self_delete_error");
+        exit();
+    }
+
+    // 2. Perform deletion (protecting other admins if necessary)
+    $delete_query = "DELETE FROM users WHERE id = $id AND role != 'admin'";
+    if(mysqli_query($conn, $delete_query)) {
+        header("Location: manage_users.php?msg=deleted");
+        exit();
+    }
 }
 
 // Handle User Creation
@@ -48,6 +60,9 @@ if(isset($_POST['add_user'])){
         .badge-admin { background: #fee2e2; color: #991b1b; }
         .badge-staff { background: #e0f2fe; color: #075985; }
         .btn-del { color: #dc3545; text-decoration: none; font-size: 12px; font-weight: bold; }
+        .alert { padding: 10px; margin-bottom: 15px; border-radius: 4px; font-weight: bold; text-align: center; }
+        .alert-error { background: #fee2e2; color: #991b1b; border: 1px solid #fecaca; }
+        .alert-success { background: #dcfce7; color: #166534; border: 1px solid #bbf7d0; }
     </style>
 </head>
 <body>
@@ -56,7 +71,12 @@ if(isset($_POST['add_user'])){
 
 <div class="card">
     <h2>👤 User Management</h2>
-    <?php if(isset($msg)) echo "<p style='color:brown; font-weight:bold;'>$msg</p>"; ?>
+    
+    <?php 
+    if(isset($msg)) echo "<div class='alert alert-success'>$msg</div>"; 
+    if(isset($_GET['msg']) && $_GET['msg'] == 'self_delete_error') echo "<div class='alert alert-error'>❌ Error: You cannot delete your own account while logged in!</div>";
+    if(isset($_GET['msg']) && $_GET['msg'] == 'deleted') echo "<div class='alert alert-success'>✅ User removed successfully.</div>";
+    ?>
 
     <form method="POST">
         <div style="display: flex; gap: 10px;">
@@ -98,8 +118,12 @@ if(isset($_POST['add_user'])){
                         <td><strong>{$row['username']}</strong></td>
                         <td><span class='badge $role_class'>{$row['role']}</span></td>
                         <td>";
-                if($row['role'] != 'admin') {
+                
+                // Logic: Don't show delete link if it's the logged-in user OR another admin
+                if($row['role'] != 'admin' && (int)$row['id'] !== (int)$_SESSION['user_id']) {
                     echo "<a href='manage_users.php?delete={$row['id']}' class='btn-del' onclick=\"return confirm('Delete this user?');\">Remove</a>";
+                } else if ((int)$row['id'] === (int)$_SESSION['user_id']) {
+                    echo "<small style='color:#999;'>Current User</small>";
                 } else {
                     echo "<small style='color:#ccc;'>Protected</small>";
                 }

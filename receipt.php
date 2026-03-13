@@ -3,6 +3,10 @@ session_start();
 if(!isset($_SESSION['admin'])){ header("Location: login.php"); exit(); }
 include 'db_connect.php';
 
+// Add this after your include 'db_connect.php';
+$settings_res = mysqli_query($conn, "SELECT address FROM shop_settings WHERE id = 1");
+$shop_info = mysqli_fetch_assoc($settings_res);
+
 // Sanitize the order_id
 $order_id = isset($_GET['order_id']) ? mysqli_real_escape_string($conn, $_GET['order_id']) : '';
 
@@ -56,15 +60,24 @@ $grand_total = $subtotal + $tax_amount;
 
 <div class="receipt-box">
     <div class="header">
-        <h2 style="margin:0;"><?php echo SHOP_NAME; ?></h2>
-        <small>Customer Invoice</small>
-        <p style="margin: 5px 0;">#<?php echo $order_id; ?></p>
-    </div>
+    <h2 style="margin:0;"><?php echo SHOP_NAME; ?></h2>
+    <small><?php echo nl2br(htmlspecialchars($shop_info['address'])); ?></small><br>
+    <small>Customer Invoice</small>
+    <p style="margin: 5px 0;">#<?php echo $order_id; ?></p>
+</div>
 
     <div class="info">
-        <strong>Date:</strong> <?php echo date('d-M-Y h:i A', strtotime($order_date)); ?><br>
-        <strong>Admin:</strong> <?php echo htmlspecialchars($served_by); ?>
-    </div>
+    <strong>Date:</strong> <?php echo date('d-M-Y h:i A', strtotime($order_date)); ?><br>
+    <strong>Admin:</strong> <?php echo htmlspecialchars($served_by); ?><br>
+    
+    <?php if(!empty($items[0]['customer_name'])): ?>
+        <strong>Customer:</strong> <?php echo htmlspecialchars($items[0]['customer_name']); ?><br>
+    <?php endif; ?>
+    
+    <?php if(!empty($items[0]['customer_phone'])): ?>
+        <strong>Phone:</strong> <?php echo htmlspecialchars($items[0]['customer_phone']); ?><br>
+    <?php endif; ?>
+</div>
 
     <table class="table">
         <thead>
