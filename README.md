@@ -63,6 +63,8 @@ Username: admin
 
 Password: password123
 
+Reset Password: http://localhost/shokher_ghor/reset_admin.php
+
 📁 Project Structure
 db_connect.php - Centralized database connection and shop settings.
 
